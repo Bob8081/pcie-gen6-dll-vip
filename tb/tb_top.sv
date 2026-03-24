@@ -17,9 +17,6 @@ module tb_top;
     localparam bit [2:0] LPIF_SPEEDMODE   = 3'b101;
     localparam bit       LPIF_LNK_UP      = 1'b1;
     localparam bit       LPIF_INBAND_PRES = 1'b1;
-    localparam bit       LPIF_ERROR       = 1'b0;
-    localparam bit       LPIF_CERROR      = 1'b0;
-    localparam bit [NBYTES-1:0] LPIF_TLPEDB = {NBYTES{1'b0}};
 
 
     // Clock & Reset Generation
@@ -49,10 +46,7 @@ module tb_top;
         .PL_LNK_CFG(LPIF_LNK_CFG),
         .PL_SPEEDMODE(LPIF_SPEEDMODE),
         .PL_LNK_UP(LPIF_LNK_UP),
-        .PL_INBAND_PRES(LPIF_INBAND_PRES),
-        .PL_ERROR(LPIF_ERROR),
-        .PL_CERROR(LPIF_CERROR),
-        .PL_TLPEDB(LPIF_TLPEDB)
+        .PL_INBAND_PRES(LPIF_INBAND_PRES)
     ) u_crossbar (
         .intf_A (rc_if),
         .intf_B (ep_if)
