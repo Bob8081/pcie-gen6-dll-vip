@@ -52,7 +52,6 @@ package pcie_dll_pkg;
   `include "transactions/tlp_txn.sv"
   `include "transactions/dllp_txn.sv"
 
-  `include "env/pcie_dl_feature_reg.sv"
   `include "env/pcie_dll_env_cfg.sv"
 
   `include "agents/pcie_dll_state_mgr.sv"
