@@ -1,5 +1,5 @@
 //class for the base state which all the states will extend from defining the common proprirties and methods
-typedef class pcie_dll_state_manager; //AI TIP: Forward declaration to avoid circular dependency between the state manager and the states
+typedef class pcie_dll_state_mgr; //AI TIP: Forward declaration to avoid circular dependency between the state manager and the states
 
 class pcie_dll_base_state extends uvm_object;
 
@@ -11,7 +11,7 @@ class pcie_dll_base_state extends uvm_object;
     endfunction
 
     // main task...here goes all the state logic and the fatal error to prevent non-overriding of this task in the child states
-    virtual task enter_state(pcie_dll_state_manager manager);
+    virtual task enter_state(pcie_dll_state_mgr manager);
         `uvm_fatal("BASE_STATE", $sformatf("The state '%s' forgot to override the enter_state() task", get_name()))
     endtask
 
