@@ -17,16 +17,16 @@ class pcie_dll_env_cfg extends uvm_object;
 
   // Timing and behavior knobs
   rand int unsigned      ack_max_latency;
-  rand int unsigned      replay_timer_cycles;
-  rand int unsigned      in_flight_replay_depth;
-  rand int unsigned      num_tlp_per_sequence;
-  rand int unsigned      dllp_latency;
+  rand int unsigned      replay_timer_cycles; // ACK timeout
+  rand int unsigned      in_flight_replay_depth; // Max number of TLP in flight
+  rand int unsigned      num_tlp_per_sequence; // Number of TLP to send in each Vsequence
+  rand int unsigned      dllp_latency; // DLLP generated after TLP
 
 
   // Reporting and coverage controls
-  rand bit               enable_coverage;
-  rand bit               verbose_scoreboard;
-  rand uvm_verbosity     log_level;
+  bit               enable_coverage;
+  bit               verbose_scoreboard;
+  uvm_verbosity     log_level;
 
   // Common constraints for randomized cfg objects.
   constraint legal_ranges_c {
@@ -36,14 +36,6 @@ class pcie_dll_env_cfg extends uvm_object;
     in_flight_replay_depth inside {[1:4096]};
     num_tlp_per_sequence inside {[1:1000000]};
     dllp_latency inside {[0:1024]};
-  }
-
-  constraint link_width_geometry_c {
-    if (link_width == PCIE_LINK_X1)  nbytes == 4;
-    if (link_width == PCIE_LINK_X2)  nbytes == 8;
-    if (link_width == PCIE_LINK_X4)  nbytes == 16;
-    if (link_width == PCIE_LINK_X8)  nbytes == 32;
-    if (link_width == PCIE_LINK_X16) nbytes == 64;
   }
 
   `uvm_object_utils_begin(pcie_dll_env_cfg)
@@ -87,7 +79,7 @@ class pcie_dll_env_cfg extends uvm_object;
     ack_max_latency       = 16;
     replay_timer_cycles   = 256;
     in_flight_replay_depth = 64;
-    num_tlp_per_sequence  = 32;
+    num_tlp_per_sequence  = 1;
     dllp_latency          = 4;
 
 
@@ -141,8 +133,8 @@ class pcie_dll_env_cfg extends uvm_object;
   static function void set_cfg(
       uvm_component    cntxt,
       string           inst_name,
-      pcie_dll_env_cfg cfg,
-      string           field_name = "cfg"
+      string           field_name = "cfg",
+      pcie_dll_env_cfg cfg
     );
     uvm_config_db#(pcie_dll_env_cfg)::set(cntxt, inst_name, field_name, cfg);
   endfunction
@@ -151,8 +143,8 @@ class pcie_dll_env_cfg extends uvm_object;
   static function bit get_cfg(
       uvm_component       cntxt,
       string              inst_name,
-      ref pcie_dll_env_cfg cfg,
       string              field_name,
+      ref pcie_dll_env_cfg cfg, 
       bit                 required
     );
     bit ok;

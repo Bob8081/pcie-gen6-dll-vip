@@ -40,8 +40,8 @@ class pcie_dll_test_base extends uvm_test;
     end
 
     // Publish shared cfg to both environments
-    pcie_dll_env_cfg::set_cfg(this, "env_rc*", cfg);
-    pcie_dll_env_cfg::set_cfg(this, "env_ep*", cfg);
+    pcie_dll_env_cfg::set_cfg(this, "env_rc*", "cfg", cfg);
+    pcie_dll_env_cfg::set_cfg(this, "env_ep*", "cfg", cfg);
 
     // Set role per-instance
     uvm_config_db#(pcie_dll_role_e)::set(this, "env_rc*", "role", ROLE_RC);
