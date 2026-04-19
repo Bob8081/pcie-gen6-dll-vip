@@ -3,7 +3,6 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
 
     //Declaration
     pcie_dll_role_e role;
-    //pcie_dll_dllp_txn req;
     virtual pcie_lpif_if vif;
     pcie_dll_base req;
     pcie_dll_dllp_txn dllp_txn;
@@ -28,18 +27,16 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
         super.connect_phase(phase);
     endfunction
 
-    // Assuming 'req' is your pcie_dll_base handle
 
     if ($cast(dllp_txn, req)) begin
     // Successfully cast to dllp_txn
         `uvm_info("CAST", "Successfully cast to DLLP", UVM_LOW);
         txn_type =1;
-    // Continue your logic for DLLP here
         end 
+
     else if ($cast(tllp_txn, req)) begin
         // Successfully cast to tllp_txn
         `uvm_info("CAST", "Successfully cast to TLLP", UVM_LOW)
-        // Continue your logic for TLLP here
         txn_type =0;
         end 
     else begin
@@ -56,11 +53,12 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
 
             if (txn_type==1) begin
                 vif.cb_drv.lp_irdy    <= 1'b1;            // Data Link layer ready to send
-                vif.cb_drv.lp_data     <= req .lp_data;  // Data Payload
+                vif.cb_drv.lp_data     <= dllp_txn.lp_data;  // Data Payload
                 vif.cb_drv.lp_valid     <= 'b111_111;      // 1 valid bit per byte
 
                 vif.cb_drv.lp_dlpstart     <= 'b0;  // the start byte of the data link layer 
                 vif.cb_drv.lp_dlpend       <= 'b1001; //'b1001   // the start byte of the data link
+                vif.cb_drv.lp_irdy    <= 1'b0;            // Data Link layer ready to send
                 
             end
             else begin
