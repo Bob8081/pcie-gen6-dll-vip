@@ -1,12 +1,12 @@
 
-class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
+class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
 
     //Declaration
     pcie_dll_role_e role;
     virtual pcie_lpif_if vif;
-    pcie_dll_base req;
-    pcie_dll_dllp_txn dllp_txn;
-    pcie_dll_tllp_txn tllp_txn;
+    pcie_dll_base_seq_item req;
+    pcie_dll_dllp_seq_item dllp_txn;
+    pcie_dll_tlp_seq_item tlp_txn;
     bit txn_type;
 
   `uvm_component_utils(pcie_dll_tx_drv)
@@ -19,12 +19,16 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
 
     //build
     function void build_phase(uvm_phase phase);
-        super.build_phase(phase);    
+        super.build_phase(phase);   
+        if(!uvm_config_db#(virtual pcie_lpif_if)::get(this, "", "vif", vif)) begin
+            `uvm_fatal("NOVIF", "Virtual interface not found in configuration database")
+        end 
     endfunction
 
     //connection
     function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
+
     endfunction
 
 
@@ -48,7 +52,6 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
   task run_phase(uvm_phase phase);
 
         forever begin
-            
             seq_item_port.get_next_item(req);
 
             if (txn_type==1) begin
@@ -61,9 +64,11 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
                 vif.cb_drv.lp_irdy    <= 1'b0;            // Data Link layer ready to send
                 
             end
-            else begin
-                //
-            end
+
+            // else begin
+            //    
+            // end
+
          // Tx Path (DLL -> PHY) : "lp_" signals
             // vif.cb_drv.lp_irdy     <= 1'b1;            // Data Link layer ready to send
             // vif.cb_drv.lp_data     <= req.lp_data;  // Data Payload
@@ -81,7 +86,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_dllp_txn);
             seq_item_port.item_done();
         end
     endtask
-endclass
+
 
 
 endclass : pcie_dll_tx_drv
