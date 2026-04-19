@@ -12,12 +12,13 @@ package pcie_dll_pkg;
     PCIE_LINK_X16 = 16
   } pcie_link_width_e;
 
+  // Values are in MT/s (mega-transfers/sec)
   typedef enum int unsigned {
-    PCIE_GEN1 = 1,
-    PCIE_GEN2 = 2,
-    PCIE_GEN3 = 3,
-    PCIE_GEN4 = 4,
-    PCIE_GEN5 = 5
+    PCIE_GEN1 =  2500,  //  2.5 GT/s
+    PCIE_GEN2 =  5000,  //  5   GT/s
+    PCIE_GEN3 =  8000,  //  8   GT/s
+    PCIE_GEN4 = 16000,  // 16   GT/s
+    PCIE_GEN5 = 32000   // 32   GT/s
   } pcie_speed_mode_e;
 
   // typedef enum int unsigned {
@@ -33,19 +34,18 @@ package pcie_dll_pkg;
     ROLE_EP = 1'b1
   } pcie_dll_role_e;
 
-  typedef enum int unsigned {
-    DLLP_ACK,
-    DLLP_NAK,
-    DLLP_INITFC1_P,
-    DLLP_INITFC1_NP,
-    DLLP_INITFC1_CPL,
-    DLLP_INITFC2_P,
-    DLLP_INITFC2_NP,
-    DLLP_INITFC2_CPL,
-    DLLP_UPDATEFC_P,
-    DLLP_UPDATEFC_NP,
-    DLLP_UPDATEFC_CPL,
-    DLLP_PWR_MGMT
+  typedef enum bit [7:0] {
+    DLLP_ACK          = 8'h00,  // 0000_0000
+    DLLP_NAK          = 8'h10,  // 0001_0000
+    DLLP_INITFC1_P    = 8'h40,  // 0100_0000  (VC0)
+    DLLP_INITFC1_NP   = 8'h50,  // 0101_0000  (VC0)
+    DLLP_INITFC1_CPL  = 8'h60,  // 0110_0000  (VC0)
+    DLLP_INITFC2_P    = 8'hC0,  // 1100_0000  (VC0)
+    DLLP_INITFC2_NP   = 8'hD0,  // 1101_0000  (VC0)
+    DLLP_INITFC2_CPL  = 8'hE0,  // 1110_0000  (VC0)
+    DLLP_UPDATEFC_P   = 8'h80,  // 1000_0000  (VC0)
+    DLLP_UPDATEFC_NP  = 8'h90,  // 1001_0000  (VC0)
+    DLLP_UPDATEFC_CPL = 8'hA0   // 1010_0000  (VC0)
   } pcie_dllp_type_e;
 
   // Included class files
