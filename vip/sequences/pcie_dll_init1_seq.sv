@@ -19,7 +19,7 @@ init1_transaction= pcie_dll_dllp_seq_item::type_id::create ("init1_transaction")
 start_item (init1_transaction);
 
 // randomization
-if (! init1_transaction.randomize() with {current_state == 2'b110 ;} ) // current state = init one state.
+if (! init1_transaction.randomize() with {current_state == DL_INIT_FC1 ;} ) // current state = init one state.
   `uvm_fatal ("FATAL", $sformatf("RANDOMIZATION FAILED !!"));
 
 finish_item (init1_transaction);

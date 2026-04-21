@@ -1,7 +1,7 @@
 class pcie_dll_dllp_seq_item extends pcie_dll_base_seq_item;
 
   // DLCMSM state — drives which DLLP types are legal for this transaction
- pcie_dlcmsm_state_e  current_state;
+ rand pcie_dlcmsm_state_e  current_state;
 
   // internal signals
   rand pcie_dllp_type_e     dllp_type;

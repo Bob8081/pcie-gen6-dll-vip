@@ -58,9 +58,10 @@ module tb_top;
         uvm_config_db#(int)::set(uvm_root::get(), "*", "tb_nbytes", NBYTES);
         uvm_config_db#(pcie_link_width_e)::set(uvm_root::get(), "*", "tb_link_width", PCIE_LINK_X16);
         uvm_config_db#(pcie_speed_mode_e)::set(uvm_root::get(), "*", "tb_speed_mode", PCIE_GEN5);
-
+        uvm_config_db#(virtual pcie_lpif_if)::set(uvm_root::get(), "*", "rc_vif", rc_if);
+        uvm_config_db#(virtual pcie_lpif_if)::set(uvm_root::get(), "*", "ep_vif", ep_if);
         // Run Test
-        // run_test("pcie_dll_test_base");
+        run_test("pcie_dll_test_base");
     end
 
 endmodule

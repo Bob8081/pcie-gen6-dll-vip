@@ -4,10 +4,13 @@ class pcie_dll_test_base extends uvm_test;
   pcie_dll_env     env_rc;
   pcie_dll_env     env_ep;
 
+  uvm_event target_reached;
+
   `uvm_component_utils(pcie_dll_test_base)
 
   function new(string name = "pcie_dll_test_base", uvm_component parent = null);
     super.new(name, parent);
+    target_reached  = new("target_reached");
   endfunction
 
   function void build_phase(uvm_phase phase);
@@ -17,6 +20,9 @@ class pcie_dll_test_base extends uvm_test;
     pcie_speed_mode_e tb_speed_mode;
 
     super.build_phase(phase);
+
+     
+     uvm_config_db#(uvm_event)::set(this, "*", "event", target_reached);
 
     cfg = pcie_dll_env_cfg::type_id::create("cfg");
     cfg.set_defaults();
@@ -51,6 +57,26 @@ class pcie_dll_test_base extends uvm_test;
     env_ep = pcie_dll_env::type_id::create("env_ep", this);
 
     `uvm_info("CFG", $sformatf("Applied cfg: %s", cfg.summary()), UVM_LOW)
+
+   
   endfunction
+  
+  task run_phase(uvm_phase phase);
+    super.run_phase(phase);
+    
+
+    phase.raise_objection(this, "Waiting for Link Up");
+    
+    
+    `uvm_info("TEST", "Waiting for State Manager to reach ACTIVE...", UVM_LOW)
+    target_reached.wait_trigger();
+    
+    
+    // #100ns;
+    
+    
+    phase.drop_objection(this, "Link is Up. Test Complete.");
+
+  endtask
 
 endclass : pcie_dll_test_base

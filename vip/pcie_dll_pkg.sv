@@ -33,41 +33,67 @@ package pcie_dll_pkg;
     ROLE_EP = 1'b1
   } pcie_dll_role_e;
 
-  typedef enum int unsigned {
-    DLLP_ACK,
-    DLLP_NAK,
-    DLLP_INITFC1_P,
-    DLLP_INITFC1_NP,
-    DLLP_INITFC1_CPL,
-    DLLP_INITFC2_P,
-    DLLP_INITFC2_NP,
-    DLLP_INITFC2_CPL,
-    DLLP_UPDATEFC_P,
-    DLLP_UPDATEFC_NP,
-    DLLP_UPDATEFC_CPL,
-    DLLP_PWR_MGMT
+  typedef enum bit [7:0] { 
+    DLLP_ACK           = 8'h00,  // 0000 0000
+    DLLP_NAK           = 8'h10,  // 0001 0000
+    DLLP_FEATURE_REQ   = 8'h02,  // 0000 0010
+    DLLP_INITFC1_P     = 8'h40,  // 0100 0000 (VC0)
+    DLLP_INITFC1_NP    = 8'h50,  // 0101 0000 (VC0)
+    DLLP_INITFC1_CPL   = 8'h60,  // 0110 0000 (VC0)
+    DLLP_INITFC2_P     = 8'hC0,  // 1100 0000 (VC0)
+    DLLP_INITFC2_NP    = 8'hD0,  // 1101 0000 (VC0)
+    DLLP_INITFC2_CPL   = 8'hE0,  // 1110 0000 (VC0)
+    DLLP_UPDATEFC_P    = 8'h80,  // 1000 0000 (VC0)
+    DLLP_UPDATEFC_NP   = 8'h90,  // 1001 0000 (VC0)
+    DLLP_UPDATEFC_CPL  = 8'hA0,  // 1010 0000 (VC0)
+    DLLP_PWR_MGMT      = 8'h24   // 0010 0100
   } pcie_dllp_type_e;
 
-  // Included class files
-  `include "transactions/tlp_txn.sv"
-  `include "transactions/dllp_txn.sv"
+   typedef enum bit [2:0] {
+    DL_INACTIVE        = 3'b000,  // link not yet up; no DLLP traffic permitted
+    DL_FEATURE_EXCH    = 3'b001,  // DL Feature Exchange handshake
+    DL_INIT_FC1        = 3'b010,  // advertising initial credits (InitFC1 round)
+    DL_INIT_FC2        = 3'b011,  // confirming received credits (InitFC2 round)
+    DL_ACTIVE          = 3'b100   // link fully active; all DLL traffic permitted
+  } pcie_dlcmsm_state_e;
 
+
+  // Included class files
+    
   `include "env/pcie_dll_env_cfg.sv"
 
-  `include "agents/pcie_dll_state_mgr.sv"
-  `include "agents/pcie_dll_seqr.sv"
+
+  `include "transactions/pcie_dll_base_seq_item.sv"
+  `include "transactions/pcie_dll_dllp_seq_item.sv"
+  `include "transactions/pcie_dll_tlp_seq_item.sv"
+  `include "sequences/pcie_dll_base_seq.sv"
+  `include "sequences/pcie_dll_feature_seq.sv"
+  `include "sequences/pcie_dll_init1_seq.sv"
+  `include "sequences/pcie_dll_init2_seq.sv"
+  `include "sequences/pcie_dll_tlp_seq.sv"
+  `include "sequences/send_single_packet.sv"
+
   `include "agents/pcie_dll_tx_drv.sv"
   `include "agents/pcie_dll_tx_mon.sv"
   `include "agents/pcie_dll_rx_mon.sv"
+  `include "agents/pcie_dll_seqr.sv"
+
+  `include "agents/pcie_dll_base_state.sv"
+ 
+  `include "agents/pcie_dll_state_mgr.sv"
+
+  `include "agents/pcie_dll_active_state.sv"
+  `include "agents/pcie_dll_inactive_state.sv"
+  `include "agents/pcie_dll_feature_state.sv"
+  `include "agents/pcie_dll_initfc1_state.sv"
+  `include "agents/pcie_dll_initfc2_state.sv"
+
+
 
   `include "scoreboards/common_checks.sv"
   `include "scoreboards/pcie_dll_scoreboard.sv"
-
+  `include "agents/pcie_dll_agent.sv"
   `include "env/pcie_dll_env.sv"
-
-  `include "sequences/pcie_dll_base_vseq.sv"
-  `include "sequences/rc_vseqs.sv"
-  `include "sequences/ep_vseqs.sv"
 
   `include "coverage/coverage.sv"
 

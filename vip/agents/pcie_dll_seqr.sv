@@ -1,4 +1,4 @@
-class pcie_dll_seqr extends uvm_sequencer #(pcie_dll_dllp_txn);
+class pcie_dll_seqr extends uvm_sequencer #(pcie_dll_base_seq_item);
 
   pcie_dll_role_e role;
 

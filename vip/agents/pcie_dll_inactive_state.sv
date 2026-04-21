@@ -1,7 +1,6 @@
 class pcie_dll_DL_INACTIVE extends pcie_dll_base_state;
 
     pcie_dlcmsm_state_e next_state; 
-
     `uvm_object_utils(pcie_dll_DL_INACTIVE)
 
     

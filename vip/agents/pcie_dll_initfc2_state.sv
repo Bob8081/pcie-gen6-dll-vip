@@ -1,6 +1,6 @@
 class pcie_dll_DL_INIT_FC2 extends pcie_dll_base_state;
 
-    pcie_dlcmsm_state_e next_state; 
+   
 
     pcie_dll_init2_seq init2_seq;
     //for monitoring the recieved sequence of DLLPs
@@ -19,7 +19,13 @@ class pcie_dll_DL_INIT_FC2 extends pcie_dll_base_state;
          counter = 0;
 
         init2_seq = pcie_dll_init2_seq::type_id::create("init2_seq");
+
+        fork begin
+
         init2_seq.start(manager.dllp_sequencer);
+        end
+
+        begin
         forever begin
             if (counter == 3) begin
                 break;
@@ -71,6 +77,8 @@ class pcie_dll_DL_INIT_FC2 extends pcie_dll_base_state;
             
                 end
             end
+        end
+    join_any
         next_state = DL_ACTIVE;
         manager.change_state(next_state); 
     endtask
