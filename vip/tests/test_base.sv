@@ -23,7 +23,8 @@ class pcie_dll_test_base extends uvm_test;
 
      
      uvm_config_db#(uvm_event)::set(this, "*", "event", target_reached);
-
+    //TODO : to be fixed so we make two config instances for each role
+    
     cfg = pcie_dll_env_cfg::type_id::create("cfg");
     cfg.set_defaults();
 
@@ -44,6 +45,8 @@ class pcie_dll_test_base extends uvm_test;
     if (!cfg.validate(validation_error_msg)) begin
       `uvm_fatal("CFG_INVALID", validation_error_msg)
     end
+    
+    //TODO : maybe vary the cfgs for each env
 
     // Publish shared cfg to both environments
     pcie_dll_env_cfg::set_cfg(this, "env_rc*", cfg);

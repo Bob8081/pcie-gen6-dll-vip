@@ -25,12 +25,15 @@ class pcie_dll_DL_INIT_FC1 extends pcie_dll_base_state;
         init1_seq.start(manager.dllp_sequencer);
         end 
         begin
-        forever begin
-            
+        forever begin 
+                        
             if (counter == 3) begin
+                //TODO :add event for setting the initfc1 flag and make it break the loop not the counter check
+                //TODO : add check for initfc2 recieve and make it trigger the flag only 
                 break;
             end
-            else begin
+            else begin //TODO : throw errors when the protocol is violated
+                //TODO : add check for values of credits recieved is matched in each packet
                 manager.dllp_fifo.get(dllp_item_rx);
                 if(counter==0)
                 begin
@@ -77,6 +80,9 @@ class pcie_dll_DL_INIT_FC1 extends pcie_dll_base_state;
             end
         end
     join_any
+
+    //TODO : here let the recieving thread only decide the transition to the next state don't make it join_any
+        
         next_state = DL_INIT_FC2;
         manager.change_state(next_state); 
     endtask

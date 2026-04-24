@@ -33,12 +33,13 @@ class pcie_dll_tx_mon extends uvm_monitor;
     forever begin
       
       
-
+      //TODO : check for reset with assertions not monitor
+      
       @(posedge vif.lclk);
-      if(vif.rst_n)begin
+      if(vif.rst_n)begin//TODO : make the check for existence of dllp more dynamic 
         if ((!(vif.lp_dlpstart >= vif.lp_dlpend) ) & (vif.lp_irdy==1'b1) & (vif.lp_valid == 'b111_111) & (vif.pl_trdy == 1'b1))begin
           dllp_item = pcie_dll_dllp_seq_item::type_id::create("dllp_item");
-          dllp_item.unpack(vif.lp_data[47:0]);
+          dllp_item.unpack(vif.lp_data[47:0]); //TODO : make it more dynamic
           mon_tx_ap.write(dllp_item);
           `uvm_info("MON", $sformatf("Observed DLLP: %h", dllp_item.dllp), UVM_LOW)
         end

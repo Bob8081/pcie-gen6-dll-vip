@@ -1,5 +1,7 @@
 class pcie_dll_env_cfg extends uvm_object;
-
+  //TODO : add fc credits (hardware fixed)
+  //TODO : add more feature support details in config
+  //TODO : fix config to work for any role (dont add fields for both roles, just one role and make two instances one for each role)
   // Link configuration (hardware-fixed at compile time, set from tb_top)
   pcie_link_width_e link_width;
   pcie_speed_mode_e speed_mode;
@@ -12,6 +14,7 @@ class pcie_dll_env_cfg extends uvm_object;
   rand bit               enable_lcrc_checking; // Whether to check LCRC in received TLPs
 
   // Data Link Feature Settings (Scaled Flow Control Supported)
+  //rand bit supported_fc 
   rand bit               rc_scaled_fc_supported;
   rand bit               ep_scaled_fc_supported;
 

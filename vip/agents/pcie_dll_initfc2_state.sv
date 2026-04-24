@@ -26,7 +26,7 @@ class pcie_dll_DL_INIT_FC2 extends pcie_dll_base_state;
         end
 
         begin
-        forever begin
+        forever begin 
             if (counter == 3) begin
                 break;
             end
@@ -79,6 +79,9 @@ class pcie_dll_DL_INIT_FC2 extends pcie_dll_base_state;
             end
         end
     join_any
+
+    //TODO : here let the recieving thread only decide the transition to the next state don't make it join_any
+        
         next_state = DL_ACTIVE;
         manager.change_state(next_state); 
     endtask

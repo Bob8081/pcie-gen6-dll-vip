@@ -27,6 +27,6 @@ finish_item (feature_transaction);
 end
 
 endtask
-
+//TODO : make the value for the feature fixed for all packets
 
 endclass : pcie_dll_feature_seq 

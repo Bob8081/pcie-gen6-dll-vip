@@ -27,6 +27,6 @@ finish_item (init1_transaction);
 end
 
 endtask
-
+//TODO : make the values for credits fixed
 
 endclass : pcie_dll_init1_seq 

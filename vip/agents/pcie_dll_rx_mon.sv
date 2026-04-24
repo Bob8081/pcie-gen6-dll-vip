@@ -33,10 +33,11 @@ class pcie_dll_rx_mon extends uvm_monitor;
     forever begin
       
       
-
+      //TODO : callbacks to be called to simulate errors 
       @(posedge vif.lclk);
       if(vif.rst_n)begin
-        if ((!(vif.pl_dlpstart >= vif.pl_dlpend) ) &  (vif.pl_valid == 'b111_111) )begin
+        //TODO : make it more dynamic
+        if ((!(vif.pl_dlpstart >= vif.pl_dlpend) ) &  (vif.pl_valid == 'b111_111) )begin //TODO : add more link checks
           dllp_item = pcie_dll_dllp_seq_item::type_id::create("dllp_item");
           dllp_item.unpack(vif.pl_data[47:0]); 
           mon_rx_ap.write(dllp_item);

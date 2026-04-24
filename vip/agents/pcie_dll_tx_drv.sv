@@ -38,7 +38,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
         vif.lp_valid    <= 'b0;
         vif.lp_dlpstart <= 'b0;
         vif.lp_dlpend   <= 'b0;
-
+        
         forever begin
             @(posedge vif.lclk);
             if (vif.rst_n)begin
@@ -61,7 +61,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
                 end
 
                 if (txn_type==1) begin
-                    
+                    //TODO : make it more dynamic (change the place of dllp on the link)
                     
                         vif.lp_irdy    <= 1'b1;            // Data Link layer ready to send
                         vif.lp_data     <= dllp_txn.dllp;  // Data Payload
@@ -74,9 +74,9 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
             
 
             // else begin
-            //    
+            //TODO : add the tlp part for next stage  
             // end
-
+               
             // Tx Path (DLL -> PHY) : "lp_" signals
                 // vif.cb_drv.lp_irdy     <= 1'b1;            // Data Link layer ready to send
                 // vif.cb_drv.lp_data     <= req.lp_data;  // Data Payload

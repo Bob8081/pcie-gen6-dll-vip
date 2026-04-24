@@ -14,7 +14,9 @@ class pcie_dll_state_mgr extends uvm_component;
     pcie_dll_env_cfg cfg; //to hold the configuration of the environment to be used in the state manager and passed to the states when needed, to decide the flow based on the features supported
     
     uvm_tlm_fifo#(pcie_dll_dllp_seq_item) dllp_fifo; //for dllp-only storage 
+
     //TODO: add tlp fifo if needed in the future
+
     pcie_dll_base_state current_state; //handle for the current state to track the state and to be accesed by the testbench
     
     pcie_dlcmsm_state_e dlsm_state; //to track the current state of the DLCM state machine, which is used in some states to decide the next steps
@@ -30,13 +32,21 @@ class pcie_dll_state_mgr extends uvm_component;
 
     function void write (pcie_dll_base_seq_item item);
       if($cast(dllp_item, item)) begin
+        //TODO : check crc and drop it if it is wrong
+
         dllp_fifo.try_put(dllp_item); //non-blocking becuse the write is a function , to avoid compiling error
+        
       end
+      else
+        begin
+            `uvm_fatal("ITEM_ERR", $sformatf("Received item of type %s, expected pcie_dll_dllp_seq_item", item.get_type_name()))
+        end
       //TODO: handle tlp items if needed in the future
     endfunction
 
     function void build_phase(uvm_phase phase);
         super.build_phase(phase);
+        //TODO : make two separate events for rc and ep
         if(!uvm_config_db#(uvm_event)::get(this, "", "event", target_reached)) begin
             `uvm_fatal("NOEV", "No event found in config_db for pcie_dll_state_mgr.")
         end
@@ -59,7 +69,7 @@ class pcie_dll_state_mgr extends uvm_component;
     virtual task change_state(pcie_dlcmsm_state_e new_state);
         //create temporary object to contain the new state, and to check if the factory can create the state ordered before changing the current state handle
         uvm_object obj;
-        string state_name = $sformatf("pcie_dll_%s", new_state.name());
+        string state_name = $sformatf("pcie_dll_%s", new_state.name()); //TODO : fix the naming (low priority)
         obj = uvm_factory::get().create_object_by_name(state_name, get_full_name(), state_name);
 
         if (obj == null) begin
