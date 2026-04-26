@@ -1,6 +1,7 @@
 class pcie_dll_test_base extends uvm_test;
 
-  pcie_dll_env_cfg cfg;
+  pcie_dll_env_cfg cfg_rc;
+  pcie_dll_env_cfg cfg_ep;
   pcie_dll_env     env_rc;
   pcie_dll_env     env_ep;
 
@@ -23,34 +24,41 @@ class pcie_dll_test_base extends uvm_test;
 
      
      uvm_config_db#(uvm_event)::set(this, "*", "event", target_reached);
-    //TODO : to be fixed so we make two config instances for each role
-    
-    cfg = pcie_dll_env_cfg::type_id::create("cfg");
-    cfg.set_defaults();
+    // Create two separate configs to allow asymmetric link properties (e.g. credits)
+    cfg_rc = pcie_dll_env_cfg::type_id::create("cfg_rc");
+    cfg_ep = pcie_dll_env_cfg::type_id::create("cfg_ep");
+    cfg_rc.set_defaults();
+    cfg_ep.set_defaults();
 
-    // Read testbench-level parameters from config_db and apply to cfg.
+    // Read testbench-level parameters from config_db and apply to both.
     if (uvm_config_db#(int)::get(this, "", "tb_nbytes", tb_nbytes)) begin
-      cfg.nbytes = tb_nbytes;
+      cfg_rc.nbytes = tb_nbytes; cfg_ep.nbytes = tb_nbytes;
       `uvm_info("CFG", $sformatf("Loaded nbytes=%0d from config_db", tb_nbytes), UVM_LOW)
     end
     if (uvm_config_db#(pcie_link_width_e)::get(this, "", "tb_link_width", tb_link_width)) begin
-      cfg.link_width = tb_link_width;
+      cfg_rc.link_width = tb_link_width; cfg_ep.link_width = tb_link_width;
       `uvm_info("CFG", $sformatf("Loaded link_width=%0d from config_db", tb_link_width), UVM_LOW)
     end
     if (uvm_config_db#(pcie_speed_mode_e)::get(this, "", "tb_speed_mode", tb_speed_mode)) begin
-      cfg.speed_mode = tb_speed_mode;
+      cfg_rc.speed_mode = tb_speed_mode; cfg_ep.speed_mode = tb_speed_mode;
       `uvm_info("CFG", $sformatf("Loaded speed_mode=%0d from config_db", tb_speed_mode), UVM_LOW)
     end
 
-    if (!cfg.validate(validation_error_msg)) begin
-      `uvm_fatal("CFG_INVALID", validation_error_msg)
-    end
-    
-    //TODO : maybe vary the cfgs for each env
+    // Differentiate the initial flow control credits
+    cfg_rc.init_fc_hdr_p = 8'h20;  cfg_rc.init_fc_data_p = 12'h100;
+    cfg_rc.init_fc_hdr_np = 8'h20; cfg_rc.init_fc_data_np = 12'h100;
+    cfg_rc.init_fc_hdr_cpl = 8'h20; cfg_rc.init_fc_data_cpl = 12'h100;
 
-    // Publish shared cfg to both environments
-    pcie_dll_env_cfg::set_cfg(this, "env_rc*", cfg);
-    pcie_dll_env_cfg::set_cfg(this, "env_ep*", cfg);
+    cfg_ep.init_fc_hdr_p = 8'h40;  cfg_ep.init_fc_data_p = 12'h200;
+    cfg_ep.init_fc_hdr_np = 8'h40; cfg_ep.init_fc_data_np = 12'h200;
+    cfg_ep.init_fc_hdr_cpl = 8'h40; cfg_ep.init_fc_data_cpl = 12'h200;
+
+    if (!cfg_rc.validate(validation_error_msg)) `uvm_fatal("CFG_RC_INV", validation_error_msg)
+    if (!cfg_ep.validate(validation_error_msg)) `uvm_fatal("CFG_EP_INV", validation_error_msg)
+
+    // Publish role-specific cfgs to the respective environments
+    pcie_dll_env_cfg::set_cfg(this, "env_rc*", cfg_rc);
+    pcie_dll_env_cfg::set_cfg(this, "env_ep*", cfg_ep);
 
     // Set role per-instance
     uvm_config_db#(pcie_dll_role_e)::set(this, "env_rc*", "role", ROLE_RC);
@@ -59,7 +67,8 @@ class pcie_dll_test_base extends uvm_test;
     env_rc = pcie_dll_env::type_id::create("env_rc", this);
     env_ep = pcie_dll_env::type_id::create("env_ep", this);
 
-    `uvm_info("CFG", $sformatf("Applied cfg: %s", cfg.summary()), UVM_LOW)
+    `uvm_info("CFG", $sformatf("Applied RC cfg: %s", cfg_rc.summary()), UVM_LOW)
+    `uvm_info("CFG", $sformatf("Applied EP cfg: %s", cfg_ep.summary()), UVM_LOW)
 
    
   endfunction

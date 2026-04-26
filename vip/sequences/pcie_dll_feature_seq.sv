@@ -19,7 +19,11 @@ feature_transaction= pcie_dll_dllp_seq_item::type_id::create ("feature_transacti
 start_item (feature_transaction);
 
 // randomization
-if (! feature_transaction.randomize() with {current_state == DL_FEATURE_EXCH ;} ) // current state = feature state.
+if (! feature_transaction.randomize() with {
+      current_state == DL_FEATURE_EXCH;
+      feature_support == {22'b0, cfg.scaled_fc_supported};
+      feature_ack == 1'b0;
+    } ) // current state = feature state.
   `uvm_fatal ("FATAL", $sformatf("RANDOMIZATION FAILED !!"));
 
 finish_item (feature_transaction);
@@ -27,6 +31,5 @@ finish_item (feature_transaction);
 end
 
 endtask
-//TODO : make the value for the feature fixed for all packets
 
 endclass : pcie_dll_feature_seq 

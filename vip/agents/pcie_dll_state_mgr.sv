@@ -69,7 +69,7 @@ class pcie_dll_state_mgr extends uvm_component;
     virtual task change_state(pcie_dlcmsm_state_e new_state);
         //create temporary object to contain the new state, and to check if the factory can create the state ordered before changing the current state handle
         uvm_object obj;
-        string state_name = $sformatf("pcie_dll_%s", new_state.name()); //TODO : fix the naming (low priority)
+        string state_name = $sformatf("pcie_dll_%s", new_state.name());
         obj = uvm_factory::get().create_object_by_name(state_name, get_full_name(), state_name);
 
         if (obj == null) begin

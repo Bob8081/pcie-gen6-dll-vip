@@ -13,10 +13,24 @@ class pcie_dll_env_cfg extends uvm_object;
   rand bit               enable_pwr_mgmt; // Power management DLLPs
   rand bit               enable_lcrc_checking; // Whether to check LCRC in received TLPs
 
-  // Data Link Feature Settings (Scaled Flow Control Supported)
-  //rand bit supported_fc 
-  rand bit               rc_scaled_fc_supported;
-  rand bit               ep_scaled_fc_supported;
+  // Data Link Feature Settings
+  rand bit               scaled_fc_supported;
+
+  // Initial Flow Control Credits
+  rand bit [1:0]         init_fc_hdr_scale_p;
+  rand bit [7:0]         init_fc_hdr_p;
+  rand bit [1:0]         init_fc_data_scale_p;
+  rand bit [11:0]        init_fc_data_p;
+
+  rand bit [1:0]         init_fc_hdr_scale_np;
+  rand bit [7:0]         init_fc_hdr_np;
+  rand bit [1:0]         init_fc_data_scale_np;
+  rand bit [11:0]        init_fc_data_np;
+
+  rand bit [1:0]         init_fc_hdr_scale_cpl;
+  rand bit [7:0]         init_fc_hdr_cpl;
+  rand bit [1:0]         init_fc_data_scale_cpl;
+  rand bit [11:0]        init_fc_data_cpl;
 
   // Timing and behavior knobs
   rand int unsigned      ack_max_latency;
@@ -57,15 +71,19 @@ class pcie_dll_env_cfg extends uvm_object;
     `uvm_field_int(enable_flow_control, UVM_DEFAULT)
     `uvm_field_int(enable_pwr_mgmt, UVM_DEFAULT)
     `uvm_field_int(enable_lcrc_checking, UVM_DEFAULT)
-    `uvm_field_int(rc_scaled_fc_supported, UVM_DEFAULT)
-    `uvm_field_int(ep_scaled_fc_supported, UVM_DEFAULT)
-    `uvm_field_int(ack_max_latency, UVM_DEFAULT)
-    `uvm_field_int(replay_timer_cycles, UVM_DEFAULT)
-    `uvm_field_int(in_flight_replay_depth, UVM_DEFAULT)
-    `uvm_field_int(num_tlp_per_sequence, UVM_DEFAULT)
-    `uvm_field_int(dllp_latency, UVM_DEFAULT)
-    `uvm_field_int(enable_coverage, UVM_DEFAULT)
-    `uvm_field_int(verbose_scoreboard, UVM_DEFAULT)
+    `uvm_field_int(scaled_fc_supported, UVM_DEFAULT)
+    `uvm_field_int(init_fc_hdr_scale_p, UVM_DEFAULT)
+    `uvm_field_int(init_fc_hdr_p, UVM_DEFAULT)
+    `uvm_field_int(init_fc_data_scale_p, UVM_DEFAULT)
+    `uvm_field_int(init_fc_data_p, UVM_DEFAULT)
+    `uvm_field_int(init_fc_hdr_scale_np, UVM_DEFAULT)
+    `uvm_field_int(init_fc_hdr_np, UVM_DEFAULT)
+    `uvm_field_int(init_fc_data_scale_np, UVM_DEFAULT)
+    `uvm_field_int(init_fc_data_np, UVM_DEFAULT)
+    `uvm_field_int(init_fc_hdr_scale_cpl, UVM_DEFAULT)
+    `uvm_field_int(init_fc_hdr_cpl, UVM_DEFAULT)
+    `uvm_field_int(init_fc_data_scale_cpl, UVM_DEFAULT)
+    `uvm_field_int(init_fc_data_cpl, UVM_DEFAULT)
     `uvm_field_enum(uvm_verbosity, log_level, UVM_DEFAULT)
   `uvm_object_utils_end
 
@@ -84,15 +102,28 @@ class pcie_dll_env_cfg extends uvm_object;
     enable_pwr_mgmt       = 1'b0;
     enable_lcrc_checking  = 1'b1;
 
-    rc_scaled_fc_supported = 1'b0;
-    ep_scaled_fc_supported = 1'b0;
+    scaled_fc_supported = 1'b0;
+
+    init_fc_hdr_scale_p    = 2'b00;
+    init_fc_hdr_p          = 8'h20;  // Default
+    init_fc_data_scale_p   = 2'b00;
+    init_fc_data_p         = 12'h100;
+
+    init_fc_hdr_scale_np   = 2'b00;
+    init_fc_hdr_np         = 8'h20;
+    init_fc_data_scale_np  = 2'b00;
+    init_fc_data_np        = 12'h100;
+
+    init_fc_hdr_scale_cpl  = 2'b00;
+    init_fc_hdr_cpl        = 8'h20;
+    init_fc_data_scale_cpl = 2'b00;
+    init_fc_data_cpl       = 12'h100;
 
     ack_max_latency       = 16;
     replay_timer_cycles   = 256;
     in_flight_replay_depth = 64;
     num_tlp_per_sequence  = 32;
     dllp_latency          = 4;
-
 
     enable_coverage       = 1'b1;
     verbose_scoreboard    = 1'b0;
@@ -171,11 +202,10 @@ class pcie_dll_env_cfg extends uvm_object;
 
   function string summary();
     return $sformatf(
-      "link=%0d speed=Gen%0d nbytes=%0d replay=%0b fc=%0b lcrc=%0b rc_sfc=%0b ep_sfc=%0b ack_max=%0d replay_tmr=%0d depth=%0d",
+      "link=%0d speed=Gen%0d nbytes=%0d replay=%0b fc=%0b lcrc=%0b sfc=%0b ack_max=%0d replay_tmr=%0d depth=%0d",
       link_width, speed_mode, nbytes,
       enable_replay, enable_flow_control, enable_lcrc_checking,
-      rc_scaled_fc_supported,
-      ep_scaled_fc_supported,
+      scaled_fc_supported,
       ack_max_latency, replay_timer_cycles, in_flight_replay_depth
     );
   endfunction
