@@ -63,9 +63,6 @@ package pcie_dll_pkg;
 
 
   // Included class files
-  `include "transactions/tlp_txn.sv"
-  `include "transactions/dllp_txn.sv"
-
   `include "env/pcie_dll_env_cfg.sv"
 
   `include "agents/pcie_dll_state_mgr.sv"
@@ -79,8 +76,6 @@ package pcie_dll_pkg;
 
   `include "env/pcie_dll_env.sv"
 
-  `include "sequences/rc_vseqs.sv"
-  `include "sequences/ep_vseqs.sv"
 
 
   `include "helpers/crc_generator.sv"
@@ -95,7 +90,7 @@ package pcie_dll_pkg;
   `include "transactions/pcie_dll_dllp_seq_item.sv"
   `include "transactions/pcie_dll_tlp_seq_item.sv"
 
-  // `include "coverage/pcie_dll_coverage.sv"
+  `include "coverage/coverage.sv"
 
   `include "tests/test_base.sv"
   `include "tests/test_dlcmsm_fc_init.sv"
