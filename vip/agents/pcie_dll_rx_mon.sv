@@ -42,7 +42,7 @@ class pcie_dll_rx_mon extends uvm_monitor;
         //   - dlpstart < dlpend framing flags indicate a DLLP frame
         //TODO : make it more dynamic
         if ((!(vif.cb_mon_rx.pl_dlpstart >= vif.cb_mon_rx.pl_dlpend)) &
-             (vif.cb_mon_rx.pl_valid == {{(cfg.nbytes-6){1'b0}}, 6'b111_111})) begin //TODO : add more link checks
+             (vif.cb_mon_rx.pl_valid == 6'b111_111)) begin //TODO : add more link checks
           dllp_item = pcie_dll_dllp_seq_item::type_id::create("dllp_item");
           // DLLP is always packed into the lowest 48 bits of pl_data
           dllp_item.unpack(vif.cb_mon_rx.pl_data[47:0]);

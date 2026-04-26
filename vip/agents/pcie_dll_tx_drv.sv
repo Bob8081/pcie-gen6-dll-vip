@@ -9,7 +9,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
     pcie_dll_tlp_seq_item  tlp_txn;
     bit txn_type;
 
-  `uvm_component_utils(pcie_dll_tx_drv)
+    `uvm_component_utils(pcie_dll_tx_drv)
 
     //construction
     function new(string name = "pcie_dll_tx_drv", uvm_component parent = null);
@@ -40,36 +40,36 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
         vif.cb_drv.lp_tlpstart <= '0;
         vif.cb_drv.lp_tlpend   <= '0;
         vif.cb_drv.lp_data     <= '0;
-        
+
         forever begin
             @(vif.cb_drv); // synchronize to clocking block edge
             if (vif.rst_n) begin
                 seq_item_port.get_next_item(req);
 
                 if ($cast(dllp_txn, req)) begin
-                    `uvm_info("CAST", "Successfully cast to DLLP", UVM_LOW)
+                    `uvm_info("CAST", "Successfully cast to DLLP", UVM_HIGH)
                     txn_type = 1;
-                end 
+                end
                 else if ($cast(tlp_txn, req)) begin
-                    `uvm_info("CAST", "Successfully cast to TLP", UVM_LOW)
+                    `uvm_info("CAST", "Successfully cast to TLP", UVM_HIGH)
                     txn_type = 0;
-                end 
+                end
                 else begin
                     `uvm_fatal("CAST_FAIL", "Fatal Error: req is neither DLLP nor TLP!")
                 end
 
                 if (txn_type == 1) begin
                     vif.cb_drv.lp_irdy    <= 1'b1;
-                    // Zero-pad the DLLP to the full lp_data bus width (cfg.nbytes*8 bits)
-                    vif.cb_drv.lp_data    <= {{(cfg.nbytes*8-48){1'b0}}, dllp_txn.dllp};
+                    // Zero-pad the DLLP to the full lp_data bus width implicitly
+                    vif.cb_drv.lp_data    <= dllp_txn.dllp;
                     // Mark only the 6 DLLP bytes as valid
-                    vif.cb_drv.lp_valid   <= {{(cfg.nbytes-6){1'b0}}, 6'b111_111};
+                    vif.cb_drv.lp_valid   <= 6'b111_111;
                     vif.cb_drv.lp_dlpstart <= '0;    // DLLP starts at byte 0
-                    vif.cb_drv.lp_dlpend  <= 'd5;   // DLLP ends at byte 5
+                    vif.cb_drv.lp_dlpend  <= 'd5;   // DLLP ends at byte 6
                 end
 
                 // else begin
-                //TODO : add the TLP path for next stage  
+                //TODO : add the TLP path for next stage
                 // end
 
                 seq_item_port.item_done();

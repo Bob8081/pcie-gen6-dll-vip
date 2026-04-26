@@ -45,7 +45,7 @@ class pcie_dll_tx_mon extends uvm_monitor;
         //TODO : make the check for existence of dllp more dynamic
         if ((!(vif.cb_mon_tx.lp_dlpstart >= vif.cb_mon_tx.lp_dlpend))             &
              (vif.cb_mon_tx.lp_irdy  == 1'b1)                                       &
-             (vif.cb_mon_tx.lp_valid == {{(cfg.nbytes-6){1'b0}}, 6'b111_111})       &
+             (vif.cb_mon_tx.lp_valid == 6'b111_111)       &
              (vif.cb_mon_tx.pl_trdy  == 1'b1)) begin
           dllp_item = pcie_dll_dllp_seq_item::type_id::create("dllp_item");
           // DLLP is always packed into the lowest 48 bits of lp_data
