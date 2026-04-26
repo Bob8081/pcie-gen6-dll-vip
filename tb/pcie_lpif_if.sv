@@ -42,4 +42,45 @@ interface pcie_lpif_if #(
     logic                  pl_error;       // Recoverable framing error
     logic                  pl_cerror;      // Correctable error
 
+
+    // Driver: drives the lp_* (DLL -> PHY) outputs, 1 time-step after posedge
+    clocking cb_drv @(posedge lclk);
+        default output #1step;
+        output lp_data;
+        output lp_valid;
+        output lp_irdy;
+        output lp_state_req;
+        output lp_tlpstart;
+        output lp_tlpend;
+        output lp_dlpstart;
+        output lp_dlpend;
+    endclocking
+
+    // TX Monitor: samples what the driver is sending on lp_* and checks pl_trdy handshake
+    clocking cb_mon_tx @(posedge lclk);
+        default input #1step;
+        input lp_data;
+        input lp_valid;
+        input lp_irdy;
+        input lp_tlpstart;
+        input lp_tlpend;
+        input lp_dlpstart;
+        input lp_dlpend;
+        input pl_trdy;
+    endclocking
+
+    // RX Monitor: samples what the PHY is sending on pl_* signals
+    clocking cb_mon_rx @(posedge lclk);
+        default input #1step;
+        input pl_data;
+        input pl_valid;
+        input pl_trdy;
+        input pl_tlpstart;
+        input pl_tlpend;
+        input pl_dlpstart;
+        input pl_dlpend;
+        input pl_tlpedb;
+        input pl_lnk_up;
+    endclocking
+
 endinterface
