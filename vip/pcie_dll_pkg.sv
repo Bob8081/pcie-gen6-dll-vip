@@ -33,7 +33,7 @@ package pcie_dll_pkg;
     ROLE_EP = 1'b1
   } pcie_dll_role_e;
 
-  typedef enum bit [7:0] { 
+  typedef enum bit [7:0] {
     DLLP_ACK           = 8'h00,  // 0000 0000
     DLLP_NAK           = 8'h10,  // 0001 0000
     DLLP_FEATURE_REQ   = 8'h02,  // 0000 0010
@@ -49,7 +49,7 @@ package pcie_dll_pkg;
     DLLP_PWR_MGMT      = 8'h24   // 0010 0100
   } pcie_dllp_type_e;
 
-   typedef enum bit [2:0] {
+  typedef enum bit [2:0] {
     DL_INACTIVE        = 3'b000,  // link not yet up; no DLLP traffic permitted
     DL_FEATURE_EXCH    = 3'b001,  // DL Feature Exchange handshake
     DL_INIT_FC1        = 3'b010,  // advertising initial credits (InitFC1 round)
@@ -59,9 +59,9 @@ package pcie_dll_pkg;
 
 
   // Included class files
-    
-  `include "env/pcie_dll_env_cfg.sv"
 
+  `include "env/pcie_dll_env_cfg.sv"
+  `include "helpers/crc16_generator.sv"
 
   `include "transactions/pcie_dll_base_seq_item.sv"
   `include "transactions/pcie_dll_dllp_seq_item.sv"
@@ -79,7 +79,7 @@ package pcie_dll_pkg;
   `include "agents/pcie_dll_seqr.sv"
 
   `include "agents/pcie_dll_base_state.sv"
- 
+
   `include "agents/pcie_dll_state_mgr.sv"
 
   `include "agents/pcie_dll_active_state.sv"

@@ -1,9 +1,9 @@
 class pcie_dll_base_seq_item extends uvm_sequence_item;
 
-    //registeration
+    // registeration
     `uvm_object_utils (pcie_dll_base_seq_item)
 
-    //construction
+    // construction
     function new (string name= "pcie_dll_base_seq_item");
         super.new (name);
     endfunction
