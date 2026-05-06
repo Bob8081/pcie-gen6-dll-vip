@@ -13,7 +13,7 @@ virtual task body ();
 pcie_dll_dllp_seq_item init2_transaction ; // handle
 
 
-repeat (5) begin
+repeat (50) begin
 init2_transaction= pcie_dll_dllp_seq_item::type_id::create ("init2_transaction"); // instance in factory 
 
 start_item (init2_transaction);

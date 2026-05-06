@@ -66,7 +66,8 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
                 if ($cast(dllp_txn, req)) begin
                     `uvm_info("CAST", "Successfully cast to DLLP", UVM_HIGH)
                     txn_type = 1;
-                    $display("from the driver %b", dllp_txn.crc);
+                    // $display("from the driver %b", dllp_txn.crc);
+                    $display("dllp from the driver %b", dllp_txn.dllp);
                 end
                 else if ($cast(tlp_txn, req)) begin
                     `uvm_info("CAST", "Successfully cast to TLP", UVM_HIGH)
