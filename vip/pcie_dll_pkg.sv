@@ -75,6 +75,7 @@ package pcie_dll_pkg;
 
   `include "agents/pcie_dll_tx_drv_cb_base.sv"
   `include "agents/pcie_dll_tx_drv_cb_crc.sv"
+  `include "agents/pcie_dll_tx_drv_cb_invalid_dllp.sv"
   `include "agents/pcie_dll_tx_drv.sv"
   `include "agents/pcie_dll_tx_mon.sv"
   `include "agents/pcie_dll_rx_mon.sv"

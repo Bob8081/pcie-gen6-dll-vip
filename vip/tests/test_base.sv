@@ -8,9 +8,16 @@ class pcie_dll_test_base extends uvm_test;
 
   uvm_event target_reached;
 
-  // the error injection callback instatiation
+  // callbacks instatiation:
+
+  // corrupted crc:
   pcie_dll_tx_drv_cb_crc pcie_dll_tx_drv_cb_crc_env_rc;
   pcie_dll_tx_drv_cb_crc pcie_dll_tx_drv_cb_crc_env_ep;
+
+  // invalid dllp:
+  pcie_dll_tx_drv_cb_invalid_dllp pcie_dll_tx_drv_cb_invalid_dllp_env_rc;
+  pcie_dll_tx_drv_cb_invalid_dllp pcie_dll_tx_drv_cb_invalid_dllp_env_ep;
+
 
   `uvm_component_utils(pcie_dll_test_base)
 
@@ -25,9 +32,18 @@ class pcie_dll_test_base extends uvm_test;
     pcie_link_width_e tb_link_width;
     pcie_speed_mode_e tb_speed_mode;
     
-    // the error injection callback handle
+    // callback handles
+
+    // corrupted crc:
     pcie_dll_tx_drv_cb_crc_env_rc = pcie_dll_tx_drv_cb_crc::type_id::create("pcie_dll_tx_drv_cb_crc_env_rc");
     pcie_dll_tx_drv_cb_crc_env_ep = pcie_dll_tx_drv_cb_crc::type_id::create("pcie_dll_tx_drv_cb_crc_env_ep");
+
+    // invalid dllp:
+    pcie_dll_tx_drv_cb_invalid_dllp_env_rc = pcie_dll_tx_drv_cb_invalid_dllp::type_id::create("pcie_dll_tx_drv_cb_invalid_dllp_env_rc");
+    pcie_dll_tx_drv_cb_invalid_dllp_env_ep = pcie_dll_tx_drv_cb_invalid_dllp::type_id::create("pcie_dll_tx_drv_cb_invalid_dllp_env_ep");
+
+
+
 
     super.build_phase(phase);
 
@@ -84,11 +100,19 @@ class pcie_dll_test_base extends uvm_test;
 
   function void connect_phase(uvm_phase phase);
 
-    // inject the callback handle to the driver
+    super.connect_phase(phase);
+
+    // inject the callback crc object to the driver
     uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_crc)::add(env_rc.agent.tx_drv, pcie_dll_tx_drv_cb_crc_env_rc);
     uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_crc)::add(env_ep.agent.tx_drv, pcie_dll_tx_drv_cb_crc_env_ep);
+
+    // inject the callback crc object to the driver
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_invalid_dllp)::add(env_rc.agent.tx_drv, pcie_dll_tx_drv_cb_invalid_dllp_env_rc);
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_invalid_dllp)::add(env_ep.agent.tx_drv, pcie_dll_tx_drv_cb_invalid_dllp_env_ep);
+
   endfunction
-  
+
+
   task run_phase(uvm_phase phase);
     super.run_phase(phase);
     
