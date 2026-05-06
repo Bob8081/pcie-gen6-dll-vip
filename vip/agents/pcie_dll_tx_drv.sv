@@ -6,8 +6,8 @@ class pcie_dll_tx_drv_callbacks extends uvm_callback; // the base class
     endfunction
 
     // tasks that would be overriden
-    virtual task pre_callback(); endtask
-    virtual task post_callback(); endtask
+    virtual task pre_transmit(pcie_dll_base_seq_item req = null);  endtask
+    virtual task post_transmit(pcie_dll_base_seq_item req = null); endtask
 endclass
 
 class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
@@ -59,7 +59,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
             @(vif.cb_drv); // synchronize to clocking block edge
             if (vif.rst_n) begin
                 seq_item_port.get_next_item(req);
-                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks, pre_callback())
+                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks, pre_transmit(req))
 
                 if ($cast(dllp_txn, req)) begin
                     `uvm_info("CAST", "Successfully cast to DLLP", UVM_HIGH)
@@ -86,7 +86,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
                 // else begin
                 //TODO : add the TLP path for next stage
                 // end
-                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks, post_callback())
+                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks, post_transmit(req))
                 seq_item_port.item_done();
             end
         end

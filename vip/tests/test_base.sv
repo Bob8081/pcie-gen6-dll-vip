@@ -1,3 +1,20 @@
+class pcie_display_cb extends pcie_dll_tx_drv_callbacks;
+  `uvm_object_utils(pcie_display_cb)
+
+  function new(string name = "pcie_display_cb");
+    super.new(name);
+  endfunction
+
+  // Override the hook with actual error injection logic
+  virtual task pre_transmit(pcie_dll_base_seq_item req = null);
+    $display("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+  endtask
+endclass
+
+
+
+
+
 class pcie_dll_test_base extends uvm_test;
 
   pcie_dll_env_cfg cfg_rc;
@@ -6,6 +23,9 @@ class pcie_dll_test_base extends uvm_test;
   pcie_dll_env     env_ep;
 
   uvm_event target_reached;
+
+  // the error injection instatiation
+  pcie_display_cb pcie_display_cb_try;
 
   `uvm_component_utils(pcie_dll_test_base)
 
@@ -19,6 +39,7 @@ class pcie_dll_test_base extends uvm_test;
     int    tb_nbytes;
     pcie_link_width_e tb_link_width;
     pcie_speed_mode_e tb_speed_mode;
+    pcie_display_cb_try = pcie_display_cb::type_id::create("pcie_display_cb_try");
 
     super.build_phase(phase);
 
@@ -71,6 +92,12 @@ class pcie_dll_test_base extends uvm_test;
     `uvm_info("CFG", $sformatf("Applied EP cfg: %s", cfg_ep.summary()), UVM_LOW)
 
    
+  endfunction
+
+  function void connect_phase(uvm_phase phase);
+
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_display_cb)::add(env_rc.agent.tx_drv, pcie_display_cb_try);
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_display_cb)::add(env_ep.agent.tx_drv, pcie_display_cb_try);
   endfunction
   
   task run_phase(uvm_phase phase);

@@ -13,7 +13,6 @@ run -all
 quit -f
 
 # for mahmoud allam
-// for mahmoud allam:
 
 vlog tb/pcie_lpif_if.sv rtl/mock_phy_crossbar.sv vip/pcie_dll_pkg.sv tb/tb_top.sv
 vsim -c -voptargs=+acc work.tb_top -do "run -all; quit -f"
