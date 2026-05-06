@@ -12,7 +12,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
     `uvm_component_utils(pcie_dll_tx_drv)
 
     //this make the queue and the function that insert into the queue
-    `uvm_register_cb(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks)
+    `uvm_register_cb(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_base)
 
     //construction
     function new(string name = "pcie_dll_tx_drv", uvm_component parent = null);
@@ -50,7 +50,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
                 seq_item_port.get_next_item(req);
 
                 // callback pre_transmit
-                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks, pre_transmit(req))
+                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_base, pre_transmit(req))
                 
                 if ($cast(dllp_txn, req)) begin
                     `uvm_info("CAST", "Successfully cast to DLLP", UVM_HIGH)
@@ -81,7 +81,7 @@ class pcie_dll_tx_drv extends uvm_driver #(pcie_dll_base_seq_item);
                 //TODO : add the TLP path for next stage
                 
                 // callback post_transmit
-                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_callbacks, post_transmit(req))
+                `uvm_do_callbacks(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_base, post_transmit(req))
                 // end
                 seq_item_port.item_done();
             end

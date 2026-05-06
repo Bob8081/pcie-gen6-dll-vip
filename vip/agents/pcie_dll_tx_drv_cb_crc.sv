@@ -1,9 +1,10 @@
-class pcie_crc_cb extends pcie_dll_tx_drv_callbacks;
-  `uvm_object_utils(pcie_crc_cb)
+
+class pcie_dll_tx_drv_cb_crc extends pcie_dll_tx_drv_cb_base;
+  `uvm_object_utils(pcie_dll_tx_drv_cb_crc)
 
   bit state_satisfied[4] = '{0, 0, 0, 0};
 
-  function new(string name = "pcie_crc_cb");
+  function new(string name = "pcie_dll_tx_drv_cb_crc");
     super.new(name);
   endfunction
 

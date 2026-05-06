@@ -1,7 +1,7 @@
-class pcie_dll_tx_drv_callbacks extends uvm_callback; // the base class
-    `uvm_object_utils(pcie_dll_tx_drv_callbacks)
+class pcie_dll_tx_drv_cb_base extends uvm_callback; // the base class
+    `uvm_object_utils(pcie_dll_tx_drv_cb_base)
 
-    function new(string name = "pcie_dll_tx_drv_callbacks");
+    function new(string name = "pcie_dll_tx_drv_cb_base");
         super.new(name);
     endfunction
 
