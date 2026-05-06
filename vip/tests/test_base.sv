@@ -1,20 +1,20 @@
-class pcie_display_cb extends pcie_dll_tx_drv_callbacks;
-  `uvm_object_utils(pcie_display_cb)
+class pcie_crc_cb extends pcie_dll_tx_drv_callbacks;
+  `uvm_object_utils(pcie_crc_cb)
 
-  function new(string name = "pcie_display_cb");
+  bit state_satisfied[4] = '{0, 0, 0, 0};
+
+  function new(string name = "pcie_crc_cb");
     super.new(name);
   endfunction
 
   virtual task pre_transmit(pcie_dll_dllp_seq_item req = null);
-
-    static bit state_satisfied[4] = '{0, 0, 0, 0};
     
     bit trigger = 0;
     int roll;
 
     // Phase 1: High Priority (20% chance)
     if (!state_satisfied[req.current_state]) begin
-        roll = $urandom_range(1, 5); // 1 out of 5 = 20%
+        roll = $urandom_range(1, 4); // 1 out of 5 = 20%
         if (roll == 1) begin
             trigger = 1;
             state_satisfied[req.current_state] = 1; // Mark as done with high priority
@@ -55,7 +55,8 @@ class pcie_dll_test_base extends uvm_test;
   uvm_event target_reached;
 
   // the error injection callback instatiation
-  pcie_display_cb pcie_display_cb_try;
+  pcie_crc_cb pcie_crc_cb_env_rc;
+  pcie_crc_cb pcie_crc_cb_env_ep;
 
   `uvm_component_utils(pcie_dll_test_base)
 
@@ -71,7 +72,8 @@ class pcie_dll_test_base extends uvm_test;
     pcie_speed_mode_e tb_speed_mode;
     
     // the error injection callback handle
-    pcie_display_cb_try = pcie_display_cb::type_id::create("pcie_display_cb_try");
+    pcie_crc_cb_env_rc = pcie_crc_cb::type_id::create("pcie_crc_cb_env_rc");
+    pcie_crc_cb_env_ep = pcie_crc_cb::type_id::create("pcie_crc_cb_env_ep");
 
     super.build_phase(phase);
 
@@ -129,8 +131,8 @@ class pcie_dll_test_base extends uvm_test;
   function void connect_phase(uvm_phase phase);
 
     // inject the callback handle to the driver
-    uvm_callbacks#(pcie_dll_tx_drv, pcie_display_cb)::add(env_rc.agent.tx_drv, pcie_display_cb_try);
-    uvm_callbacks#(pcie_dll_tx_drv, pcie_display_cb)::add(env_ep.agent.tx_drv, pcie_display_cb_try);
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_crc_cb)::add(env_rc.agent.tx_drv, pcie_crc_cb_env_rc);
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_crc_cb)::add(env_ep.agent.tx_drv, pcie_crc_cb_env_ep);
   endfunction
   
   task run_phase(uvm_phase phase);
