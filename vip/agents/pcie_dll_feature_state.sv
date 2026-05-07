@@ -13,12 +13,11 @@ class pcie_dll_DL_FEATURE_EXCH extends pcie_dll_base_state;
 
     task start_state(pcie_dll_state_mgr manager);
         
-        if ((manager.role == ROLE_RC) & (manager.cfg.rc_scaled_fc_supported) || (manager.role == ROLE_EP) & (manager.cfg.ep_scaled_fc_supported)) begin
-            `uvm_info("STATE", "Entered DL_FEATURE_EXCH state", UVM_LOW)
-            feature_seq = pcie_dll_feature_seq::type_id::create("feature_seq");
-            feature_seq.start(manager.dllp_sequencer); 
-        end
-
+        
+        feature_seq = pcie_dll_feature_seq::type_id::create("feature_seq");
+        feature_seq.start(manager.dllp_sequencer); 
+    
+        
         //TODO : here add logic for tranisiton from feature to init_fc1
      
         next_state = DL_INIT_FC1;

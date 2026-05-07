@@ -10,10 +10,16 @@ class pcie_dll_DL_INACTIVE extends pcie_dll_base_state;
 
     task start_state(pcie_dll_state_mgr manager);
         `uvm_info("STATE", "Entered DL_INACTIVE state", UVM_LOW)
+
         //TODO : here wait for the link up signal
-        //TODO : add logic to check for the presence of the feature state (e.g. the configuration's scaled_support filed is set or not) and decide what is next state depepnding on it)
-        next_state = DL_FEATURE_EXCH;
+        //check for the supporting of the feature state
+        if (manager.role == ROLE_EP & manager.cfg.ep_scaled_fc_supported || manager.role == ROLE_RC & manager.cfg.rc_scaled_fc_supported) begin
+            next_state = DL_FEATURE_EXCH;
+        end
+        else  begin
+            next_state = DL_INIT_FC1;   
+        end
         manager.change_state(next_state); 
     endtask 
-
+    
 endclass : pcie_dll_DL_INACTIVE

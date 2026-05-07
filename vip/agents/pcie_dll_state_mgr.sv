@@ -3,7 +3,7 @@ class pcie_dll_state_mgr extends uvm_component;
     `uvm_component_utils(pcie_dll_state_mgr);
   
     pcie_dll_role_e role;
-
+    
     uvm_analysis_imp #(pcie_dll_base_seq_item, pcie_dll_state_mgr) dllp_export; //connected to the monitor on the agent level
 
     pcie_dll_seqr dllp_sequencer; //to be a handle to the sequencer of the agent to be able to send from the state manager if needed, and to be able to pass it to the states if needed
@@ -20,8 +20,10 @@ class pcie_dll_state_mgr extends uvm_component;
     pcie_dll_base_state current_state; //handle for the current state to track the state and to be accesed by the testbench
     
     pcie_dlcmsm_state_e dlsm_state; //to track the current state of the DLCM state machine, which is used in some states to decide the next steps
+    
+    int unsigned other_device_FC_P, other_device_FC_NP, other_device_FC_CPL; //to check for 
 
-    uvm_event target_reached; //to be triggered when the state machine reaches the target state (DL_ACTIVE) to let the testbench know about it and to check the coverage at that point
+    uvm_event target_reached; //to be triggered when the state machine reaches the target state (DL_ACTIVE) to let the test end
 
     function new(string name = "pcie_dll_state_mgr", uvm_component parent = null);
         super.new(name, parent);
