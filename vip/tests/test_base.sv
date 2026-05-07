@@ -18,6 +18,9 @@ class pcie_dll_test_base extends uvm_test;
   pcie_dll_tx_drv_cb_invalid_dllp pcie_dll_tx_drv_cb_invalid_dllp_env_rc;
   pcie_dll_tx_drv_cb_invalid_dllp pcie_dll_tx_drv_cb_invalid_dllp_env_ep;
 
+  // dllp feature exchange
+  pcie_dll_tx_drv_cb_dl_feature_exch pcie_dll_tx_drv_cb_dl_feature_exch_env_rc;
+  pcie_dll_tx_drv_cb_dl_feature_exch pcie_dll_tx_drv_cb_dl_feature_exch_env_ep;
 
   `uvm_component_utils(pcie_dll_test_base)
 
@@ -42,6 +45,9 @@ class pcie_dll_test_base extends uvm_test;
     pcie_dll_tx_drv_cb_invalid_dllp_env_rc = pcie_dll_tx_drv_cb_invalid_dllp::type_id::create("pcie_dll_tx_drv_cb_invalid_dllp_env_rc");
     pcie_dll_tx_drv_cb_invalid_dllp_env_ep = pcie_dll_tx_drv_cb_invalid_dllp::type_id::create("pcie_dll_tx_drv_cb_invalid_dllp_env_ep");
 
+    // dllp feature exchange
+    pcie_dll_tx_drv_cb_dl_feature_exch_env_rc = pcie_dll_tx_drv_cb_dl_feature_exch::type_id::create("pcie_dll_tx_drv_cb_dl_feature_exch_env_rc");
+    pcie_dll_tx_drv_cb_dl_feature_exch_env_ep = pcie_dll_tx_drv_cb_dl_feature_exch::type_id::create("pcie_dll_tx_drv_cb_dl_feature_exch_env_ep");
 
 
 
@@ -106,9 +112,14 @@ class pcie_dll_test_base extends uvm_test;
     uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_crc)::add(env_rc.agent.tx_drv, pcie_dll_tx_drv_cb_crc_env_rc);
     uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_crc)::add(env_ep.agent.tx_drv, pcie_dll_tx_drv_cb_crc_env_ep);
 
-    // inject the callback crc object to the driver
+    // inject the callback invalid dllp object to the driver
     uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_invalid_dllp)::add(env_rc.agent.tx_drv, pcie_dll_tx_drv_cb_invalid_dllp_env_rc);
     uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_invalid_dllp)::add(env_ep.agent.tx_drv, pcie_dll_tx_drv_cb_invalid_dllp_env_ep);
+
+    // inject the callback feature exchange object to the driver
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_dl_feature_exch)::add(env_rc.agent.tx_drv, pcie_dll_tx_drv_cb_dl_feature_exch_env_rc);
+    uvm_callbacks#(pcie_dll_tx_drv, pcie_dll_tx_drv_cb_dl_feature_exch)::add(env_ep.agent.tx_drv, pcie_dll_tx_drv_cb_dl_feature_exch_env_ep);
+
 
   endfunction
 
